@@ -1,4 +1,4 @@
-package usecase
+package auth
 
 import (
 	"context"
@@ -6,16 +6,17 @@ import (
 	"fmt"
 	middleware "github.com/Alias1177/merch-store/internal/middleware/jwt"
 	"github.com/Alias1177/merch-store/internal/models"
+	"github.com/Alias1177/merch-store/internal/usecase/contract"
 	"github.com/Alias1177/merch-store/pkg"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUsecase struct {
-	dbR    DBRepo
+	dbR    contract.DBRepo
 	secret string
 }
 
-func New(dbR DBRepo, secret string) *UserUsecase {
+func New(dbR contract.DBRepo, secret string) *UserUsecase {
 	return &UserUsecase{
 		dbR:    dbR,
 		secret: secret,

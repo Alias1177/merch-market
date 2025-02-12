@@ -2,9 +2,10 @@ package main
 
 import (
 	"github.com/Alias1177/merch-store/internal/config/config"
-	"github.com/Alias1177/merch-store/internal/handlers"
+	"github.com/Alias1177/merch-store/internal/handlers/handlers"
 	Jwtm "github.com/Alias1177/merch-store/internal/middleware/jwt"
-	"github.com/Alias1177/merch-store/internal/usecase"
+	"github.com/Alias1177/merch-store/internal/usecase/auth"
+	"github.com/Alias1177/merch-store/internal/usecase/buy"
 	"log"
 	"net/http"
 
@@ -27,8 +28,12 @@ func main() {
 	db := repositories.New(cfg.Database.DSN)
 	defer db.Close()
 
-	userUsecase := usecase.New(db, cfg.JWT.Secret)
-	handler := handlers.New(userUsecase)
+	buyRepo := repositories.NewBuyRepository(db) // Репозиторий покупок
+	buyUsecase := buy.NewBuyUsecase(buyRepo)     // Бизнес-логика покупок
+
+	userUsecase := auth.New(db, cfg.JWT.Secret)
+	handler := handlers.New(userUsecase, buyUsecase)
+	// Добавляем зависимость для покупки
 
 	r.Route("/api", func(route chi.Router) {
 		// Публичные маршруты (без JWT)
@@ -37,7 +42,8 @@ func main() {
 		// Защищенные маршруты (с JWT)
 		route.Group(func(protected chi.Router) {
 			protected.Use(Jwtm.JWTMiddleware(cfg.JWT.Secret))
-			//protected.Get("/buy/{item}", handlers.BuyHandler(db))
+			protected.Get("/buy/{item}", handler.HandleBuy) // Покупка
+
 			//protected.Post("/sendCoin", handlers.SendCoinsHandler(db))
 			//protected.Get("/info", handlers.InfoHandler(db))
 		})

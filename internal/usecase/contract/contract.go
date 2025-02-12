@@ -1,4 +1,4 @@
-package usecase
+package contract
 
 import (
 	"context"
@@ -7,4 +7,7 @@ import (
 
 type DBRepo interface {
 	CreateUser(ctx context.Context, username, passwordHash string, coins int) (*models.User, error)
+}
+type BuyUsecase interface {
+	BuyItem(ctx context.Context, userID, itemID int) error
 }
