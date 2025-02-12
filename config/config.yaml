@@ -1,0 +1,10 @@
+app:
+  port: "8080"                 # Порт приложения
+database:
+  dsn : "host=localhost port=6000 user=myuser password=mypassword dbname=mydb sslmode=disable"
+jwt:
+  secret: "supersecretkey"     # Секретный ключ для JWT
+
+
+#docker exec -it pg_db psql -U myuser -d mydb
+# \dt
