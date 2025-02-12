@@ -1,12 +1,13 @@
 package main
 
 import (
+	"github.com/Alias1177/merch-store/internal/config/config"
+	"github.com/Alias1177/merch-store/internal/handlers"
 	Jwtm "github.com/Alias1177/merch-store/internal/middleware/jwt"
+	"github.com/Alias1177/merch-store/internal/usecase"
 	"log"
 	"net/http"
 
-	"github.com/Alias1177/merch-store/config/config"
-	"github.com/Alias1177/merch-store/internal/handlers"
 	"github.com/Alias1177/merch-store/internal/repositories"
 	"github.com/Alias1177/merch-store/pkg/logger"
 
@@ -16,26 +17,29 @@ import (
 
 func main() {
 	logger.ColorLogger()
-	cfg := config.Load("./config/config.yaml")
+	cfg := config.Load(".env")
 
 	r := chi.NewRouter()
-	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 
 	// Подключение к БД
-	db := repositories.Connect(cfg.Database.DSN)
+	db := repositories.New(cfg.Database.DSN)
 	defer db.Close()
+
+	userUsecase := usecase.New(db, cfg.JWT.Secret)
+	handler := handlers.New(userUsecase)
 
 	r.Route("/api", func(route chi.Router) {
 		// Публичные маршруты (без JWT)
-		route.Post("/auth", handlers.RegisterHandler(db))
+		route.Post("/auth", handler.RegisterHandler)
 
 		// Защищенные маршруты (с JWT)
 		route.Group(func(protected chi.Router) {
 			protected.Use(Jwtm.JWTMiddleware(cfg.JWT.Secret))
-			protected.Get("/buy/{item}", handlers.BuyHandler(db))
-			protected.Post("/sendCoin", handlers.SendCoinsHandler(db))
-			protected.Get("/info", handlers.InfoHandler(db))
+			//protected.Get("/buy/{item}", handlers.BuyHandler(db))
+			//protected.Post("/sendCoin", handlers.SendCoinsHandler(db))
+			//protected.Get("/info", handlers.InfoHandler(db))
 		})
 	})
 

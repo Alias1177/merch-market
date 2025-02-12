@@ -26,3 +26,7 @@ type SentTransaction struct {
 	ToUser string `json:"toUser" db:"username"`
 	Amount int    `json:"amount" db:"amount"`
 }
+type RegisterRequest struct {
+	Username string `json:"username"` // Имя пользователя
+	Password string `json:"password"` // Пароль
+}
