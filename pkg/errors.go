@@ -10,4 +10,5 @@ var (
 	ErrUserNotFound      = errors.New("User not found")
 	ErrInsufficientFunds = errors.New("Insufficient funds")
 	ErrUserAlreadyExists = errors.New("user already exists")
+	RespondWithError     = errors.New("Unavthorized")
 )

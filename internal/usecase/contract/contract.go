@@ -24,3 +24,10 @@ type InfoUsecase interface {
 type InfoRepository interface {
 	GetUserInfo(ctx context.Context, userID int) (*models.InfoResponse, error)
 }
+type CoinsRepository interface {
+	SendCoins(ctx context.Context, senderID int, receiverUsername string, amount int) error
+}
+
+type CoinsUsecase interface {
+	SendCoins(ctx context.Context, senderID int, receiverUsername string, amount int) error
+}
