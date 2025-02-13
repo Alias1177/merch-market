@@ -19,12 +19,14 @@ func (h *Handler) HandleInfo(w http.ResponseWriter, r *http.Request) {
 	info, err := h.infoUsecase.GetUserInfo(r.Context(), userID)
 	if err != nil {
 		slog.Error("Failed to get user info: " + err.Error())
-		http.Error(w, "Failed to get user info", http.StatusInternalServerError)
+		http.Error(w, "Failed to get user info", http.StatusBadRequest)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(info); err != nil {
-		http.Error(w, "Failed to get user info", http.StatusInternalServerError)
+		slog.Error("Server error: " + err.Error())
+		http.Error(w, "Server error", http.StatusInternalServerError)
 	}
+	w.WriteHeader(http.StatusOK)
 }

@@ -35,7 +35,9 @@ func (h *Handler) HandleBuy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Успешный ответ
+	if err := json.NewEncoder(w).Encode(map[string]string{"message": "Item purchased successfully!"}); err != nil {
+		slog.Error("Failed to encode response: " + err.Error())
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 	w.WriteHeader(http.StatusOK)
-	_ = json.NewEncoder(w).Encode(map[string]string{"message": "Item purchased successfully!"})
 }

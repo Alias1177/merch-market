@@ -32,5 +32,9 @@ func (h *Handler) HandleSendCoins(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to send coins: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	_ = json.NewEncoder(w).Encode(map[string]string{"message": "Coins sent successfully"})
+	if err := json.NewEncoder(w).Encode(map[string]string{"message": "Coins sent successfully"}); err != nil {
+		slog.Error("Encode error: " + err.Error())
+		http.Error(w, "Failed to send coins: "+err.Error(), http.StatusInternalServerError)
+	}
+	w.WriteHeader(http.StatusOK)
 }

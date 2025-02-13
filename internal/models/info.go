@@ -1,4 +1,3 @@
-// models/info.go
 package models
 
 type InfoResponse struct {
@@ -27,6 +26,6 @@ type SentTransaction struct {
 	Amount int    `json:"amount" db:"amount"`
 }
 type RegisterRequest struct {
-	Username string `json:"username"` // Имя пользователя
-	Password string `json:"password"` // Пароль
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
