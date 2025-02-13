@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"context"
+	"log"
+
 	"github.com/Alias1177/merch-store/internal/models"
 )
 
@@ -10,7 +12,13 @@ func (u *Repository) GetUserInfo(ctx context.Context, userID int) (*models.InfoR
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err != nil {
+			if rbErr := tx.Rollback(); rbErr != nil {
+				log.Printf("Ошибка при откате транзакции: %v", rbErr)
+			}
+		}
+	}()
 
 	var coins int
 	err = tx.GetContext(ctx, &coins, "SELECT coins FROM users WHERE id = $1", userID)

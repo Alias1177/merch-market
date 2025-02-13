@@ -3,6 +3,7 @@ package middleware
 import (
 	"context"
 	"errors"
+
 	"github.com/Alias1177/merch-store/internal/constants"
 	"github.com/Alias1177/merch-store/pkg/logger"
 )

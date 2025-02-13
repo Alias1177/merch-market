@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/Alias1177/merch-store/pkg/logger"
+	"context"
 	"log"
 	"log/slog"
 
@@ -15,8 +15,7 @@ type Repository struct {
 	conn *sqlx.DB
 }
 
-func New(dsn string) *Repository {
-	logger.ColorLogger()
+func New(ctx context.Context, dsn string) *Repository {
 	db, err := sqlx.Connect("postgres", dsn)
 	if err != nil {
 		slog.Error(pkg.DbError)
@@ -26,11 +25,13 @@ func New(dsn string) *Repository {
 	return &Repository{db}
 }
 
-func (r *Repository) Close() {
-	logger.ColorLogger()
-	err := r.conn.Close()
-	if err != nil {
-		slog.Error(pkg.DbError)
-		log.Fatalf("Unable to close the database connection: %v", err)
+func (r *Repository) Close() error {
+	if r.conn != nil {
+		slog.Info("Закрытие соединения с базой данных")
+		if err := r.conn.Close(); err != nil {
+			slog.Error("Ошибка при закрытии соединения с БД", "error", err)
+			return err
+		}
 	}
+	return nil
 }

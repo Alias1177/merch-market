@@ -3,7 +3,9 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
+	"log"
 )
 
 func (r *Repository) SendCoins(ctx context.Context, senderID int, receiverUsername string, amount int) error {
@@ -11,11 +13,17 @@ func (r *Repository) SendCoins(ctx context.Context, senderID int, receiverUserna
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() {
+		if err != nil {
+			if rbErr := tx.Rollback(); rbErr != nil {
+				log.Printf("Ошибка при откате транзакции: %v", rbErr)
+			}
+		}
+	}()
 
 	var receiverID int
 	err = tx.GetContext(ctx, &receiverID, "SELECT id FROM users WHERE username = $1", receiverUsername)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		return fmt.Errorf("user not found")
 	} else if err != nil {
 		return err
