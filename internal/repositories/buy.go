@@ -5,15 +5,6 @@ import (
 	"fmt"
 )
 
-// BuyRepository реализует интерфейс BuyRepo
-//type BuyRepository struct {
-//	conn *sqlx.DB
-//}
-//
-//func NewBuyRepository(repo *Repository) *BuyRepository {
-//	return &BuyRepository{conn: repo.conn}
-//}
-
 // Реализация метода BuyItem (выполнение транзакции)
 func (r *Repository) BuyItem(ctx context.Context, userID, itemID int) error {
 	tx, err := r.conn.BeginTxx(ctx, nil) // Начинаем транзакцию

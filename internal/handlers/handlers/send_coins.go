@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/Alias1177/merch-store/internal/middleware"
 	"github.com/Alias1177/merch-store/internal/models"
 	"net/http"
@@ -13,19 +12,20 @@ func (h *Handler) HandleSendCoins(w http.ResponseWriter, r *http.Request) {
 
 	senderID, err := middleware.GetUserID(r.Context())
 	if err != nil {
-		fmt.Errorf("Unauthorized", http.StatusUnauthorized)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
 	var req models.SendCoinRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		fmt.Errorf("Invalid request format", http.StatusBadRequest)
+		http.Error(w, "Invalid request format", http.StatusBadRequest)
 		return
 	}
 
 	err = h.sendUsecase.SendCoins(r.Context(), senderID, req.ToUser, req.Amount)
 	if err != nil {
-		fmt.Errorf("Failed to send coins", http.StatusInternalServerError)
+		http.Error(w, "Failed to send coins: "+err.Error(), http.StatusInternalServerError)
+		return
 	}
 	_ = json.NewEncoder(w).Encode(map[string]string{"message": "Coins sent successfully"})
 }
