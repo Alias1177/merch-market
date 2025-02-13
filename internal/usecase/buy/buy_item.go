@@ -3,7 +3,7 @@ package buy
 import (
 	"context"
 	"fmt"
-	"github.com/Alias1177/merch-store/internal/handlers/contract"
+	"github.com/Alias1177/merch-store/internal/usecase/contract"
 )
 
 // BuyUsecaseImpl реализует интерфейс BuyUsecase

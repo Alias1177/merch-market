@@ -3,21 +3,19 @@ package repositories
 import (
 	"context"
 	"fmt"
-
-	"github.com/jmoiron/sqlx"
 )
 
 // BuyRepository реализует интерфейс BuyRepo
-type BuyRepository struct {
-	conn *sqlx.DB
-}
-
-func NewBuyRepository(repo *Repository) *BuyRepository {
-	return &BuyRepository{conn: repo.conn}
-}
+//type BuyRepository struct {
+//	conn *sqlx.DB
+//}
+//
+//func NewBuyRepository(repo *Repository) *BuyRepository {
+//	return &BuyRepository{conn: repo.conn}
+//}
 
 // Реализация метода BuyItem (выполнение транзакции)
-func (r *BuyRepository) BuyItem(ctx context.Context, userID, itemID int) error {
+func (r *Repository) BuyItem(ctx context.Context, userID, itemID int) error {
 	tx, err := r.conn.BeginTxx(ctx, nil) // Начинаем транзакцию
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)

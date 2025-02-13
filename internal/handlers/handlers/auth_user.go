@@ -17,7 +17,7 @@ func (h *Handler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.userU.CreateUser(r.Context(), req)
+	token, err := h.userUsecase.CreateUser(r.Context(), req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

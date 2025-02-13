@@ -1,18 +1,19 @@
 package handlers
 
 import (
-	"github.com/Alias1177/merch-store/internal/handlers/contract"
-	contract2 "github.com/Alias1177/merch-store/internal/usecase/contract"
+	"github.com/Alias1177/merch-store/internal/usecase/contract"
 )
 
 type Handler struct {
-	userU   contract.UserUsecase
-	usecase contract2.BuyUsecase
+	userUsecase contract.UserUsecase
+	buyUsecase  contract.BuyUsecase
+	infoUsecase contract.InfoUsecase
 }
 
-func New(userU contract.UserUsecase, usecase contract2.BuyUsecase) *Handler {
+func New(userU contract.UserUsecase, buyUsecase contract.BuyUsecase, infoUsecase contract.InfoUsecase) *Handler {
 	return &Handler{
-		userU:   userU,
-		usecase: usecase,
+		userUsecase: userU,
+		buyUsecase:  buyUsecase,
+		infoUsecase: infoUsecase,
 	}
 }

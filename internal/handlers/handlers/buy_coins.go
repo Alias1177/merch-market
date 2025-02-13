@@ -25,7 +25,7 @@ func (h *Handler) HandleBuy(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Выполнение бизнес-логики покупки
-	if err := h.usecase.BuyItem(r.Context(), userID, itemID); err != nil {
+	if err := h.buyUsecase.BuyItem(r.Context(), userID, itemID); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
