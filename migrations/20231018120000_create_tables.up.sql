@@ -1,4 +1,3 @@
--- 📌 Создание таблицы users
 CREATE TABLE IF NOT EXISTS users (
                                      id SERIAL PRIMARY KEY,
                                      username VARCHAR(255) UNIQUE NOT NULL,
@@ -7,14 +6,16 @@ CREATE TABLE IF NOT EXISTS users (
                                      created_at TIMESTAMP DEFAULT NOW()
 );
 
--- 📌 Создание таблицы items
+CREATE INDEX IF NOT EXISTS idx_users_username_lower ON users(LOWER(username));
+
 CREATE TABLE IF NOT EXISTS items (
                                      id SERIAL PRIMARY KEY,
                                      name VARCHAR(255) UNIQUE NOT NULL,
                                      price INT NOT NULL CHECK (price > 0)
 );
 
--- 📌 Заполнение таблицы items
+CREATE INDEX IF NOT EXISTS idx_items_price ON items(price);
+
 INSERT INTO items (name, price) VALUES
                                     ('t-shirt', 80),
                                     ('cup', 20),
@@ -27,7 +28,6 @@ INSERT INTO items (name, price) VALUES
                                     ('wallet', 50),
                                     ('pink-hoody', 500);
 
--- 📌 Создание таблицы inventory
 CREATE TABLE IF NOT EXISTS inventory (
                                          id SERIAL PRIMARY KEY,
                                          user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -36,7 +36,10 @@ CREATE TABLE IF NOT EXISTS inventory (
                                          UNIQUE(user_id, item_id)
 );
 
--- 📌 Создание таблицы transactions
+-- Индексы для ускорения поиска по инвентарю
+CREATE INDEX IF NOT EXISTS idx_inventory_user_id ON inventory(user_id);
+CREATE INDEX IF NOT EXISTS idx_inventory_item_id ON inventory(item_id);
+
 CREATE TABLE IF NOT EXISTS transactions (
                                             id SERIAL PRIMARY KEY,
                                             sender_id INT REFERENCES users(id) ON DELETE SET NULL,
@@ -44,3 +47,8 @@ CREATE TABLE IF NOT EXISTS transactions (
                                             amount INT NOT NULL CHECK (amount > 0),
                                             created_at TIMESTAMP DEFAULT NOW()
 );
+
+
+CREATE INDEX IF NOT EXISTS idx_transactions_sender_id ON transactions(sender_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_receiver_id ON transactions(receiver_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions(created_at);
