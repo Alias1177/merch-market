@@ -29,7 +29,7 @@ func main() {
 
 	ctx := context.Background()
 
-	cfg := config.Load("../../.env")
+	cfg := config.Load(os.Getenv("CONFIG_PATH"))
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)

@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy  # Ждем, пока postgres будет готов
+    environment:
+      - DATABASE_DSN=host=postgres port=5432 user=myuser password=mypassword dbname=mydb sslmode=disable
+      - CONFIG_PATH=.env
+    networks:
+      - app-network
+
   postgres:
     image: postgres:15
     container_name: pg_db
@@ -12,6 +25,13 @@ services:
       - "6000:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:  # Добавляем проверку здоровья
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   migrate:
     image: migrate/migrate
@@ -21,6 +41,12 @@ services:
     command: ["-help"]
     depends_on:
       - postgres
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
