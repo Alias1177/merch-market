@@ -6,7 +6,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// Генерация JWT токена
 func GenerateJWT(userID int, username, secretKey string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id":  userID,

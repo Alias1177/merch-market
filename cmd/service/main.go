@@ -29,7 +29,7 @@ func main() {
 
 	ctx := context.Background()
 
-	cfg := config.Load(".env")
+	cfg := config.Load("../../.env")
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -57,47 +57,35 @@ func main() {
 	})
 
 	srv := &http.Server{
-		Addr:    ":" + cfg.App.Port,
-		Handler: r,
+		Addr:         ":" + cfg.App.Port,
+		Handler:      r,
+		ReadTimeout:  10 * time.Second, // можно вынести в конфиг
+		WriteTimeout: 10 * time.Second, // можно вынести в конфиг
+		IdleTimeout:  30 * time.Second, // можно вынести в конфиг
 	}
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-
-	serverErrors := make(chan error, 1)
-
+	// Запуск сервера в отдельной горутине
 	go func() {
+		slog.Info("starting server", "address", srv.Addr)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			serverErrors <- err
+			slog.Error("server error", "error", err)
+			os.Exit(1)
 		}
 	}()
 
-	select {
-	case err := <-serverErrors:
-		slog.Error("Ошибка запуска сервера", "error", err)
+	// Ожидание сигнала для graceful shutdown
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM)
+	sig := <-stop
+	slog.Info("received shutdown signal", "signal", sig.String())
 
-		if err := repo.Close(); err != nil {
-			slog.Error("Ошибка при закрытии соединения с БД", "error", err)
-		}
-		os.Exit(1)
-	case sig := <-quit:
-		slog.Info("Получен сигнал завершения", "signal", sig)
+	// Graceful shutdown с таймаутом
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
-		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer shutdownCancel()
-
-		if err := srv.Shutdown(shutdownCtx); err != nil {
-			slog.Error("Ошибка при graceful shutdown HTTP сервера", "error", err)
-		}
-
-		if err := repo.Close(); err != nil {
-			slog.Error("Ошибка при закрытии соединения с БД", "error", err)
-		}
-
-		if errors.Is(shutdownCtx.Err(), context.DeadlineExceeded) {
-			slog.Warn("Превышено время ожидания graceful shutdown")
-		}
+	if err := srv.Shutdown(ctx); err != nil {
+		slog.Error("server shutdown failed", "error", err)
 	}
 
-	slog.Info("Сервер успешно остановлен")
+	slog.Info("server gracefully stopped")
 }

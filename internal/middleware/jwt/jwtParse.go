@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/Alias1177/merch-store/internal/constants"
-	"github.com/Alias1177/merch-store/pkg/logger"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -16,7 +15,6 @@ import (
 func JWTMiddleware(secretKey string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			logger.ColorLogger()
 			// Извлекаем токен из заголовка Authorization
 			authHeader := r.Header.Get("Authorization")
 			if authHeader == "" {

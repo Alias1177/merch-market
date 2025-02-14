@@ -36,7 +36,8 @@ func (r *Repository) SendCoins(ctx context.Context, senderID int, receiverUserna
 	}
 
 	if senderCoins < amount {
-		return fmt.Errorf("not enough coins")
+		err = fmt.Errorf("not enough coins")
+		return err
 	}
 
 	_, err = tx.ExecContext(ctx, "UPDATE users SET coins = coins - $1 WHERE id = $2", amount, senderID)

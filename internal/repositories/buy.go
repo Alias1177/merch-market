@@ -34,7 +34,8 @@ func (r *Repository) BuyItem(ctx context.Context, userID, itemID int) error {
 	}
 
 	if coins < price {
-		return fmt.Errorf("not enough coins for the purchase")
+		err = fmt.Errorf("not enough coins for the purchase")
+		return err
 	}
 
 	if _, err = tx.ExecContext(ctx, "UPDATE users SET coins = coins - $1 WHERE id = $2", price, userID); err != nil {
