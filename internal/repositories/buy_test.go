@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"context"
+	"testing"
+
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestBuyItem(t *testing.T) {

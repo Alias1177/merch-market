@@ -3,13 +3,13 @@ package repositories
 import (
 	"context"
 	"database/sql"
-	"github.com/Alias1177/merch-store/internal/models"
+	"testing"
 
+	"github.com/Alias1177/merch-store/internal/models"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestGetUserInfo(t *testing.T) {
@@ -179,5 +179,4 @@ func TestGetUserInfo(t *testing.T) {
 		err = mock.ExpectationsWereMet()
 		assert.NoError(t, err)
 	})
-
 }

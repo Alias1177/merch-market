@@ -3,12 +3,14 @@ package middleware
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"github.com/Alias1177/merch-store/internal/constants"
-	"github.com/golang-jwt/jwt/v5"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/golang-jwt/jwt/v5"
+
+	"github.com/Alias1177/merch-store/internal/constants"
 )
 
 func TestJWTMiddleware(t *testing.T) {
@@ -20,7 +22,7 @@ func TestJWTMiddleware(t *testing.T) {
 			return
 		}
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		_, _ = w.Write([]byte("OK"))
 	}
 
 	tests := []struct {
@@ -83,11 +85,7 @@ func TestJWTMiddleware(t *testing.T) {
 // Вспомогательная функция для создания токена с корректным или отсутствующим user_id
 func createToken(secretKey string, claims map[string]interface{}) string {
 	tokenClaims := jwt.MapClaims{}
-	if claims != nil {
-		for k, v := range claims {
-			tokenClaims[k] = v
-		}
-	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
 	signedToken, err := token.SignedString([]byte(secretKey))
 	if err != nil {

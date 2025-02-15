@@ -3,6 +3,8 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"testing"
+
 	"github.com/Alias1177/merch-store/internal/models"
 	"github.com/Alias1177/merch-store/pkg"
 	"github.com/DATA-DOG/go-sqlmock"
@@ -10,7 +12,6 @@ import (
 	"github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestCreateUser(t *testing.T) {

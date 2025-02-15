@@ -3,13 +3,13 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"github.com/Alias1177/merch-store/internal/constants"
-	"golang.org/x/crypto/bcrypt"
-
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/Alias1177/merch-store/internal/constants"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Alias1177/merch-store/internal/models"
 	"github.com/Alias1177/merch-store/internal/usecase/auth"

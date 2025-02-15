@@ -3,11 +3,12 @@ package info_test
 import (
 	"context"
 	"errors"
+	"testing"
+
 	"github.com/Alias1177/merch-store/internal/models"
 	"github.com/Alias1177/merch-store/internal/usecase/info"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 type MockInfoRepository struct {
