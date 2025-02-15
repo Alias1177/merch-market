@@ -70,6 +70,7 @@ go test ./... -coverprofile=coverage.out
 
 go tool cover -func=coverage.out
 ```
+![Image 15 02 25 at 20 02](https://github.com/user-attachments/assets/4296bdf5-4562-448b-a37d-cbac01e35bf1)
 
 #### 2. **Запуск тестов на высокий уровень нагрузки:**
 Для проверки производительности и поведения под нагрузкой используйте скрипт `load-test.js` с инструментом k6:
