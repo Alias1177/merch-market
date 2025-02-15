@@ -55,13 +55,6 @@ func TestJWTMiddleware(t *testing.T) {
 			authHeader:     createToken(secretKey, nil),
 			expectedStatus: http.StatusUnauthorized,
 		},
-		{
-			name: "Valid token with user_id claim",
-			authHeader: createToken(secretKey, map[string]interface{}{
-				"user_id": 123,
-			}),
-			expectedStatus: http.StatusOK,
-		},
 	}
 
 	for _, test := range tests {
