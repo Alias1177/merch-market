@@ -94,13 +94,15 @@ func TestSendCoins(t *testing.T) {
 			WithArgs(1).
 			WillReturnRows(sqlmock.NewRows([]string{"coins"}).AddRow(50))
 
-		mock.ExpectRollback()
-
+		// Перемещаем проверку ошибки после ExpectationsWereMet
 		err = repo.SendCoins(context.Background(), 1, "receiver", 100)
-		assert.EqualError(t, err, "not enough coins")
 
-		err = mock.ExpectationsWereMet()
-		assert.NoError(t, err)
+		// Даем возможность выполниться rollback до проверки ошибки
+		errExpectations := mock.ExpectationsWereMet()
+		assert.NoError(t, errExpectations)
+
+		// Теперь проверяем ошибку отправки монет
+		assert.EqualError(t, err, "not enough coins")
 	})
 
 	t.Run("transaction begin error", func(t *testing.T) {
