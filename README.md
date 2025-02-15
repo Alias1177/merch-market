@@ -175,21 +175,16 @@ go tool cover -func=coverage.out
 
 ### Информация для разработчиков
 
+#### Установка линтера
+
+```bash
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+```
 #### Запуск линтеров
 Проект настроен для линтинга с помощью GolangCI-Lint:
 ```bash
 golangci-lint run
 ```
-
-#### Сборка и запуск вручную:
-1. Соберите Go-приложение:
-   ```bash
-   go build -o main ./cmd/service
-   ```
-2. Запустите приложение с указанием пути до конфига:
-   ```bash
-   ./main
-   ```
 
 #### Дополнительное тестирование эндпоинтов
 Используйте Postman или аналогичные инструменты для ручного тестирования REST API.
