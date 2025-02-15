@@ -177,7 +177,7 @@ go tool cover -func=coverage.out
 ### Информация для разработчиков
 
 #### Установка линтера
-
+**Обратите внимание,проект написан на версии GO 1.24 (если у вас другая линтер может не работать)**
 ```bash
 go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 ```
