@@ -59,9 +59,9 @@ func main() {
 	srv := &http.Server{
 		Addr:         ":" + cfg.App.Port,
 		Handler:      r,
-		ReadTimeout:  10 * time.Second, // можно вынести в конфиг
-		WriteTimeout: 10 * time.Second, // можно вынести в конфиг
-		IdleTimeout:  30 * time.Second, // можно вынести в конфиг
+		ReadTimeout:  10 * time.Second, 
+		WriteTimeout: 10 * time.Second, 
+		IdleTimeout:  30 * time.Second, 
 	}
 
 	// Запуск сервера в отдельной горутине
